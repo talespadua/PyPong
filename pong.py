@@ -19,7 +19,8 @@ class Pong():
         self.screen_width = screen_width
         self.screen_height = screen_height
 
-        self.game_font = pygame.font.SysFont(None, 50)
+        self.score_font = pygame.font.SysFont(None, 50)
+        self.text_font = pygame.font.SysFont(None, 25)
 
         self.running = True
 
@@ -56,7 +57,11 @@ class Pong():
             # Control FPS
             self.clock.tick(20)
 
+    #wait for input to start round
     def wait_input(self):
+        pause_text = self.text_font.render("Press SPACE or ENTER to star round", True, self.red)
+        self.game_display.blit(pause_text, [self.screen_width / 3, self.screen_height / 2])
+        pygame.display.flip()
         while self.new_round:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -66,8 +71,9 @@ class Pong():
                         return
                     if event.key == pygame.K_ESCAPE:
                         self.exit_game()
-            self.clock(10)
+            self.clock.tick(10)
 
+    #Check collision with window boundaries
     def check_boundaries_collision(self):
         if self.ball.pos_x < 0:
             self.player_two_points += 1
@@ -82,6 +88,7 @@ class Pong():
         if self.ball.pos_y < 0 or self.ball.pos_y > self.screen_height - self.ball.size:
             self.ball.speed_y *= -1
 
+    #Check if the ball collide with the bumpers
     def check_bumpers_collision(self):
         if (self.ball.pos_x < self.bumper_one.pos_x + self.bumper_one.width and
                     self.ball.pos_x + self.ball.size > self.bumper_one.pos_x and
@@ -103,12 +110,14 @@ class Pong():
             elif self.bumper_two.moving_down:
                 self.ball.speed_y += 5
 
+    #Draw player scores on the screen
     def draw_score(self):
-        p_one_score = self.game_font.render(str(self.player_one_points), True, self.red)
-        p_two_score = self.game_font.render(str(self.player_two_points), True, self.red)
+        p_one_score = self.score_font.render(str(self.player_one_points), True, self.red)
+        p_two_score = self.score_font.render(str(self.player_two_points), True, self.red)
         self.game_display.blit(p_one_score, [self.screen_width / 4, self.screen_height / 6])
         self.game_display.blit(p_two_score, [(self.screen_width / 4)*3, self.screen_height / 6])
 
+    #Draw everything in the screen
     def draw_screen(self):
         self.game_display.fill(self.black)
         self.draw_score()
@@ -119,6 +128,7 @@ class Pong():
         self.game_display.fill(self.white, rect=[self.ball.pos_x, self.ball.pos_y, self.ball.size, self.ball.size])
         self.game_display.fill(self.white, rect=[(self.screen_width / 2) - 1, 0, 2, self.screen_height])
 
+    #Input handler for the single player game
     def handle_input_sp(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -188,6 +198,7 @@ class Pong():
                         paused = False
             self.clock.tick(30)
 
+    #exit game
     def exit_game(self):
         pygame.quit()
         quit()
