@@ -78,15 +78,23 @@ class Pong():
         if self.ball.pos_x < 0:
             self.player_two_points += 1
             self.ball.reset()
+            self.reset_bumpers()
             self.new_round = True
 
         elif self.ball.pos_x > self.screen_width - self.ball.size:
             self.player_one_points += 1
             self.ball.reset()
+            self.reset_bumpers()
             self.new_round = True
 
         if self.ball.pos_y < 0 or self.ball.pos_y > self.screen_height - self.ball.size:
             self.ball.speed_y *= -1
+
+    def reset_bumpers(self):
+        self.bumper_one.moving_down = False
+        self.bumper_one.moving_up = False
+        self.bumper_two.moving_down = False
+        self.bumper_two.moving_up = False
 
     #Check if the ball collide with the bumpers
     def check_bumpers_collision(self):
@@ -137,16 +145,20 @@ class Pong():
                 # Keys for player one
                 if event.key == pygame.K_s:
                     self.bumper_one.moving_down = True
+                    self.bumper_one.moving_up = False
 
                 if event.key == pygame.K_w:
                     self.bumper_one.moving_up = True
+                    self.bumper_one.moving_down = False
 
                 # Keys for player two
                 if event.key == pygame.K_DOWN:
                     self.bumper_two.moving_down = True
+                    self.bumper_two.moving_up = False
 
                 if event.key == pygame.K_UP:
                     self.bumper_two.moving_up = True
+                    self.bumper_two.moving_down = False
 
                 # handle pause game
                 if event.key == pygame.K_ESCAPE:
